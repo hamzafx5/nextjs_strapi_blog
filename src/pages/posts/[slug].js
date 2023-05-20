@@ -18,6 +18,7 @@ import {
     WhatsappShareButton,
     WhatsappIcon,
 } from "react-share";
+import { useRouter } from "next/router";
 
 export async function getStaticPaths() {
     const {
@@ -40,7 +41,7 @@ export async function getStaticPaths() {
             slug: post.attributes.slug,
         },
     }));
-    return { paths, fallback: true };
+    return { paths, fallback: "blocking" };
 }
 
 export async function getStaticProps({ params: { slug } }) {
@@ -81,13 +82,23 @@ export async function getStaticProps({ params: { slug } }) {
         props: {
             post: data.posts.data[0],
         },
+        revalidate: 120,
     };
 }
 
 export default function BlogPost({ post }) {
-    let cover = post.attributes.cover.data.attributes.url || null;
-    let coverAlt = post.attributes.cover.data.attributes.alternativeText || null;
-    let postURL = getBaseURL(`/posts/${post.attributes.slug}`);
+    const router = useRouter();
+    if (router.isFallback) {
+        return (
+            <p className="text-center bg-orange-100 text-orange-600 border border-orange-200 rounded px-4 py-1 w-max block mx-auto my-10">
+                Loading...
+            </p>
+        );
+    }
+    if (!post) return <p>Not found 404</p>;
+    let coverURL = post?.attributes.cover.data.attributes.url || null;
+    let coverAlt = post?.attributes.cover.data.attributes.alternativeText || undefined;
+    let postURL = getBaseURL(`/posts/${post?.attributes.slug}`);
     return (
         <>
             <Nav />
@@ -102,7 +113,7 @@ export default function BlogPost({ post }) {
                             <span className="w-1 h-1 rounded-md bg-gray-600 inline-block" />
                             Kategorie: {post.attributes.category.data.attributes.name}
                         </div>
-                        {cover && (
+                        {coverURL && (
                             <figure className="block border rounded-xl bg-gray-50 mb-8 aspect-video relative overflow-hidden">
                                 <Image
                                     priority
@@ -112,7 +123,7 @@ export default function BlogPost({ post }) {
                                         height: "100%",
                                     }}
                                     fill
-                                    src={cover}
+                                    src={coverURL}
                                     alt={coverAlt}
                                 />
                             </figure>
@@ -120,6 +131,7 @@ export default function BlogPost({ post }) {
                     </header>
 
                     <div itemProp="articleBody" className="article-body">
+                        {/* eslint-disable-next-line */}
                         <ReactMarkdown children={post.attributes.body} />
                     </div>
                 </article>
