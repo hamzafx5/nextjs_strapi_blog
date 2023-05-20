@@ -6,7 +6,7 @@ export default function Nav() {
     const [open, setOpen] = useState(false);
     return (
         <nav className="container">
-            <div className=" py-4 lg:py-[30px] flex items-center justify-between gap-4">
+            <div className="py-4 lg:py-[30px] flex items-center justify-between gap-4">
                 <Link href="/">
                     <Image width={145} height={40} src="/images/logo.svg" alt="Logo" />
                 </Link>
@@ -36,7 +36,7 @@ export default function Nav() {
                         <LinkItem href="/" label="Anatomie" />
                         <LinkItem href="/" label="Präpkurs" />
                         <LinkItem href="/" label="Histologie" />
-                        <LinkItem href="/" label="Quiz" />
+                        <LinkItem href="/" label="Blog" />
                     </ul>
                     <div className="md:hidden">
                         <FreeTrailButton />
@@ -63,7 +63,7 @@ function FreeTrailButton() {
     return (
         <button className="bg-black h-[32px] pr-4 pl-[4px] rounded-[32px] text-white flex gap-[6px] items-center">
             <Image width={24} height={24} src="/images/crown.svg" alt="Crown" />
-            <span className="text-[14px] font-semibold leading-none whitespace-nowrap">
+            <span className="text-[14px] font-semibold leading-none ">
                 Free Trial ends in 2 days
             </span>
         </button>
